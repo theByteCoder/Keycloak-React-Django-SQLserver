@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css?family=Lobster");
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+.inline {
+  display: inline-block;
+}
+h1,
+a[href] {
+  font-family: lobster, sans-serif;
+}
+html {
+  margin: 2em;
+}
+.textbox {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #000000;
+  outline: none;
+  box-shadow: none;
+}
+button,
+input {
+  margin: 5px;
+  background: transparent;
+}
+.col-cell-text {
+  color: black;
+}
+html,
+head,
+body {
+  background: url("./static/background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+.navbar-inner {
+  background: transparent;
+}
+#loading {
+  width: 60px;
+  height: 60px;
+  display: none;
+  background-image: url("./static/loader.gif");
+  /* cursor: wait; */
+}
