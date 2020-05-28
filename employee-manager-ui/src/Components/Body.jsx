@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class Body extends Component {
+export default class Body extends Component {
   state = {};
   render() {
     return (
@@ -12,5 +12,3 @@ class Body extends Component {
     );
   }
 }
-
-export default Body;

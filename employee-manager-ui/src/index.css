@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Lobster");
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -11,6 +12,9 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+h3 {
+  font-family: "Roboto", "sans-serif";
 }
 .inline {
   display: inline-block;
@@ -29,10 +33,17 @@ html {
   outline: none;
   box-shadow: none;
 }
-button,
 input {
   margin: 5px;
   background: transparent;
+}
+button {
+  border-radius: 50px 50px 50px 50px;
+  /* margin: 5px; */
+  background: transparent;
+}
+:disabled {
+  background: #dddddd;
 }
 .col-cell-text {
   color: black;

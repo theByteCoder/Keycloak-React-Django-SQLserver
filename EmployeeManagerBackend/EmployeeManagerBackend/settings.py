@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'employees',
         'USER': 'MYSQL_SHARED_USER',
         'PASSWORD': '',
-        'HOST': '192.168.0.105',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }

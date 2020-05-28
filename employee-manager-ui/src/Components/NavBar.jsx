@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class NavBar extends Component {
+export default class NavBar extends Component {
   state = {
     welcomeMessage: "Welcome to Employee support",
   };
@@ -10,10 +10,7 @@ class NavBar extends Component {
       <React.Fragment>
         <nav className="navbar bg-transparent navbar-inner navbar-expand-lg navbar-light bg-light static-top mb-5 shadow">
           <div className="container">
-            <a
-              className="navbar-brand"
-              href="javascript:window.location.href=window.location.href"
-            >
+            <a className="navbar-brand" href="http://localhost:3000/">
               <h1>{this.state.welcomeMessage}</h1>
             </a>
             <button
@@ -53,5 +50,3 @@ class NavBar extends Component {
     );
   }
 }
-
-export default NavBar;

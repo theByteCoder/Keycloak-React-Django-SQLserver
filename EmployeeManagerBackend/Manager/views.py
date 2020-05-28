@@ -40,7 +40,7 @@ def get_record_single(request, emp_no):
     if not (len(all_emp) == 0):
         return JsonResponse(all_emp, safe=False)
     else:
-        return JsonResponse({}, safe=False)
+        return JsonResponse([], safe=False)
 
 
 def update_record(request, **info):
