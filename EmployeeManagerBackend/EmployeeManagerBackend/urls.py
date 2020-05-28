@@ -22,11 +22,11 @@ router = routers.DefaultRouter()
 router.register('Employees', EmployeesViews)
 
 urlpatterns = [
-    path('api/createEmployee/info=<str:info>', create_record),
+    path('api/searchEmployee/create/info=<str:info>/', create_record),
     # path('api/employeesList/', get_record),
     path('api/searchEmployee/', get_record_all),
     path('api/searchEmployee/emp_no=<int:emp_no>/', get_record_single),
-    path('api/searchEmployee/update/info=<str:info>', update_record),
+    path('api/searchEmployee/update/info=<str:info>/', update_record),
     path('api/searchEmployee/delete/emp_no=<int:emp_no>/', delete_record),
     path('api/googleSearch/', google_search),
 ]

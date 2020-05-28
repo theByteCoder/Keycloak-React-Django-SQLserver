@@ -7,32 +7,63 @@ export default class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      BASE_URI: "http://127.0.0.1:8000/api/searchEmployee",
       empnum: " ",
       data: [],
       loaded: false,
       selectedRadio: "",
       placeholder: "Loading",
       buttonClass: "inline btn m-2 btn-",
+      toEdit: false,
       editable: "",
+      FIRST_NAME: "",
+      LAST_NAME: "",
+      GENDER: "",
+      BIRTH_DATE: "",
+      HIRE_DATE: "",
+      notified_firstname: false,
+      notified_lastname: false,
+      notified_gender: false,
+      notified_birthdate: false,
+      notified_hirdate: false,
+      buttonCreate: true,
+      buttonEdit: true,
+      buttonUpdate: true,
+      buttonDelete: true,
     };
   }
 
   Notify(message) {
     toast(message, {
       position: "top-right",
-      autoClose: 5000,
-      // autoClose: false,
+      // autoClose: 5000,
+      autoClose: false,
     });
   }
 
   handleInputboxChange = (e) => {
     this.table.hidden = true;
     this.editTable.hidden = true;
-    this.createButton.hidden = true;
-    this.editButton.hidden = true;
-    this.updateButton.hidden = true;
-    this.deleteButton.hidden = true;
-    this.setState({ selectedRadio: "", editable: "" });
+    this.setState({
+      buttonCreate: true,
+      buttonEdit: true,
+      buttonUpdate: true,
+      buttonDelete: true,
+    });
+    // this.createButton.hidden = true;
+    // this.editButton.hidden = true;
+    // this.updateButton.hidden = true;
+    // this.deleteButton.hidden = true;
+    this.setState({
+      selectedRadio: "",
+      editable: "",
+      toEdit: false,
+      notified_firstname: false,
+      notified_lastname: false,
+      notified_gender: false,
+      notified_birthdate: false,
+      notified_hirdate: false,
+    });
     if (e.target.value !== "") {
       if (e.target.value === "*" || !isNaN(e.target.value)) {
         this.searchButton.className = this.state.buttonClass + "primary";
@@ -51,15 +82,68 @@ export default class Form extends Component {
   };
 
   handleRadioButtonChange = (e) => {
-    this.setState({ selectedRadio: e.target.value, editable: "" });
-    this.editButton.hidden = false;
-    this.updateButton.hidden = true;
-    this.deleteButton.hidden = false;
+    this.setState({
+      toEdit: false,
+      selectedRadio: e.target.value,
+      editable: "",
+      notified_firstname: false,
+      notified_lastname: false,
+      notified_gender: false,
+      notified_birthdate: false,
+      notified_hirdate: false,
+    });
+    this.setState({
+      buttonEdit: false,
+      buttonUpdate: true,
+      buttonDelete: false,
+    });
+    // this.editButton.hidden = false;
+    // this.updateButton.hidden = true;
+    // this.deleteButton.hidden = false;
   };
+
+  handleFirstNameChange(e) {
+    this.setState({ notified_firstname: false, FIRST_NAME: e.target.value });
+  }
+  handleLastNameChange(e) {
+    this.setState({ notified_lastname: false, LAST_NAME: e.target.value });
+  }
+  handleGenderChange(e) {
+    this.setState({ notified_gender: false, GENDER: e.target.value });
+  }
+  handleBirthdateChange(e) {
+    this.setState({ notified_birthdate: false, BIRTH_DATE: e.target.value });
+  }
+  handleHiredateChange(e) {
+    this.setState({ notified_hirdate: false, HIRE_DATE: e.target.value });
+  }
+
+  allEditFieldsFilled() {
+    let info = {
+      emp_no: this.state.selectedRadio,
+      first_name: this.state.FIRST_NAME,
+      last_name: this.state.LAST_NAME,
+      gender: this.state.GENDER,
+      birth_date: this.state.BIRTH_DATE,
+      hire_date: this.state.HIRE_DATE,
+    };
+    return JSON.stringify(info);
+  }
+  allCreateFieldsFilled() {
+    let info = {
+      emp_no: this.state.empnum,
+      first_name: this.state.FIRST_NAME,
+      last_name: this.state.LAST_NAME,
+      gender: this.state.GENDER,
+      birth_date: this.state.BIRTH_DATE,
+      hire_date: this.state.HIRE_DATE,
+    };
+    return JSON.stringify(info);
+  }
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.callApi();
+    this.callApi_searchEmployee();
   };
 
   getSelectedRow() {
@@ -70,14 +154,116 @@ export default class Form extends Component {
   }
 
   onEdit = () => {
-    this.setState({ editable: this.state.selectedRadio });
-    this.Notify("Please update details for selected record");
-    this.editButton.hidden = true;
-    this.updateButton.hidden = false;
+    this.setState({
+      toEdit: true,
+      editable: this.state.selectedRadio,
+      buttonEdit: false,
+      buttonUpdate: true,
+    });
+    // this.Notify("Please update details for selected record");
+
+    this.setState({
+      buttonEdit: true,
+      buttonUpdate: false,
+    });
+    // this.editButton.hidden = true;
+    // this.updateButton.hidden = false;
+
     // this.getSelectedRow().removeAttribute("hidden");
   };
 
-  onUpdate = () => {};
+  onCreate() {
+    let str = "";
+    let reqList = [];
+    if (this.state.FIRST_NAME === "") {
+      reqList.push("First Name");
+    }
+    if (this.state.LAST_NAME === "") {
+      reqList.push("Last Name");
+    }
+    if (this.state.GENDER === "") {
+      reqList.push("Gender");
+    }
+    if (this.state.BIRTH_DATE === "") {
+      reqList.push("Birth Date");
+    }
+    if (this.state.HIRE_DATE === "") {
+      reqList.push("Hire Date");
+    }
+    if (reqList.length === 0) {
+      let info = this.allCreateFieldsFilled();
+      this.callApi_updateCreateDeleteRecord(
+        `${this.state.BASE_URI}/create/info=${info}/`
+      );
+      this.setState({
+        toEdit: false,
+      });
+    } else {
+      if (reqList.length > 1) {
+        for (var count = 0; count < reqList.length; count++) {
+          str += reqList[count] + ", ";
+        }
+        str += "are required.";
+        str = str.replace(", are required.", " are required.");
+        this.Notify(str);
+      } else if (reqList.length === 1) {
+        str = `${reqList[0]} is required.`;
+        this.Notify(str);
+      }
+      reqList = [];
+    }
+  }
+
+  onUpdate() {
+    let str = "";
+    let reqList = [];
+    if (this.state.toEdit === true) {
+      if (this.state.FIRST_NAME === "") {
+        reqList.push("First Name");
+      }
+      if (this.state.LAST_NAME === "") {
+        reqList.push("Last Name");
+      }
+      if (this.state.GENDER === "") {
+        reqList.push("Gender");
+      }
+      if (this.state.BIRTH_DATE === "") {
+        reqList.push("Birth Date");
+      }
+      if (this.state.HIRE_DATE === "") {
+        reqList.push("Hire Date");
+      }
+      if (reqList.length === 0) {
+        let info = this.allEditFieldsFilled();
+        console.log(typeof info);
+        this.callApi_updateCreateDeleteRecord(
+          `${this.state.BASE_URI}/update/info=${info}/`
+        );
+        this.setState({
+          toEdit: false,
+        });
+      } else {
+        if (reqList.length > 1) {
+          for (var count = 0; count < reqList.length; count++) {
+            str += reqList[count] + ", ";
+          }
+          str += "are required.";
+          str = str.replace(", are required.", " are required.");
+          this.Notify(str);
+        } else if (reqList.length === 1) {
+          str = `${reqList[0]} is required.`;
+          this.Notify(str);
+        }
+        reqList = [];
+      }
+    }
+  }
+
+  onDelete() {
+    this.callApi_updateCreateDeleteRecord(
+      `${this.state.BASE_URI}/delete/emp_no=${this.state.selectedRadio}/`
+    );
+  }
 
   isEmpty(obj) {
     for (var key in obj) {
@@ -88,12 +274,11 @@ export default class Form extends Component {
 
   componentDidMount() {}
 
-  callApi() {
+  callApi_searchEmployee() {
     let url = "";
-    if (this.state.empnum === "*")
-      url = "http://127.0.0.1:8000/api/searchEmployee/";
+    if (this.state.empnum === "*") url = `${this.state.BASE_URI}/`;
     else if (!isNaN(this.state.empnum))
-      url = `http://127.0.0.1:8000/api/searchEmployee/emp_no=${this.state.empnum}/`;
+      url = `${this.state.BASE_URI}/emp_no=${this.state.empnum}/`;
     fetch(url)
       .then((response) => {
         if (response.status > 400) {
@@ -109,9 +294,12 @@ export default class Form extends Component {
       .then((data) => {
         // if (data !== undefined) {
         if (this.isEmpty(data)) {
+          this.setState({
+            buttonCreate: false,
+          });
           this.editTable.hidden = false;
-          this.createButton.hidden = false;
-          this.Notify("Record(s) not available. Please create new record.");
+          // this.createButton.hidden = false;
+          this.Notify("Record is not available. Please create new record.");
         } else {
           this.table.hidden = false;
         }
@@ -121,6 +309,57 @@ export default class Form extends Component {
             loaded: true,
           };
         });
+        // }
+      });
+  }
+
+  callApi_updateCreateDeleteRecord(url) {
+    fetch(url)
+      .then((response) => {
+        if (response.status > 400) {
+          return this.setState(() => {
+            this.Notify("Something went wrong!");
+            return { placeholder: "Something went wrong!" };
+          });
+        }
+        // if (response["type"] === "cors") {
+        return response.json();
+        // }
+      })
+      .then((response) => {
+        // if (data !== undefined) {
+        if (!this.isEmpty(response)) {
+          if (response["response"] === "201 Created") {
+            this.editTable.hidden = true;
+            this.Notify(
+              `Record for Employee ${this.state.empnum} created successfully.`
+            );
+            this.callApi_searchEmployee();
+          } else if (response["response"] === "204 Deleted") {
+            this.Notify(
+              `Record for Employee ${this.state.selectedRadio} deleted successfully.`
+            );
+            this.callApi_searchEmployee();
+          } else if (response["response"] === "404 Not Found") {
+            this.Notify(
+              `Record for Employee ${this.state.selectedRadio} not found.`
+            );
+            this.callApi_searchEmployee();
+          } else if (response["response"] === "201 Updated") {
+            this.Notify(
+              `Record for Employee ${this.state.selectedRadio} updated successfully.`
+            );
+            this.callApi_searchEmployee();
+          }
+          this.setState({
+            toEdit: false,
+            selectedRadio: "",
+            editable: "",
+            buttonUpdate: true,
+            buttonEdit: true,
+            buttonDelete: true,
+          });
+        }
         // }
       });
   }
@@ -154,7 +393,9 @@ export default class Form extends Component {
             type="button"
             ref={(createButton) => (this.createButton = createButton)}
             className={this.state.buttonClass + "info"}
-            hidden
+            onClick={this.onCreate.bind(this)}
+            // hidden
+            hidden={this.state.buttonCreate === true ? true : false}
           >
             Create
           </button>
@@ -163,7 +404,8 @@ export default class Form extends Component {
             ref={(editButton) => (this.editButton = editButton)}
             className={this.state.buttonClass + "info"}
             onClick={this.onEdit.bind(this)}
-            hidden
+            // hidden
+            hidden={this.state.buttonEdit === true ? true : false}
           >
             Edit
           </button>
@@ -171,8 +413,9 @@ export default class Form extends Component {
             type="button"
             ref={(updateButton) => (this.updateButton = updateButton)}
             className={this.state.buttonClass + "info"}
-            onClick={this.onUpdate()}
-            hidden
+            onClick={this.onUpdate.bind(this)}
+            // hidden
+            hidden={this.state.buttonUpdate === true ? true : false}
           >
             Update
           </button>
@@ -180,7 +423,9 @@ export default class Form extends Component {
             type="button"
             ref={(deleteButton) => (this.deleteButton = deleteButton)}
             className={this.state.buttonClass + "danger"}
-            hidden
+            onClick={this.onDelete.bind(this)}
+            // hidden
+            hidden={this.state.buttonDelete === true ? true : false}
           >
             Delete
           </button>
@@ -222,24 +467,49 @@ export default class Form extends Component {
                 <input
                   type="text"
                   value={this.state.empnum}
-                  name="first_name"
+                  name="emp_no"
                   disabled
                 />
               </td>
               <td>
-                <input type="text" name="first_name" required />
+                <input
+                  type="text"
+                  name="first_name"
+                  onChange={(e) => this.handleFirstNameChange(e)}
+                  required
+                />
               </td>
               <td>
-                <input type="text" name="last_name" required />
+                <input
+                  type="text"
+                  name="last_name"
+                  onChange={(e) => this.handleLastNameChange(e)}
+                  required
+                />
               </td>
               <td>
-                <input type="text" name="gender" required />
+                <input
+                  type="text"
+                  name="gender"
+                  onChange={(e) => this.handleGenderChange(e)}
+                  required
+                />
               </td>
               <td>
-                <input type="text" name="birth_date" required />
+                <input
+                  type="text"
+                  name="birth_date"
+                  onChange={(e) => this.handleBirthdateChange(e)}
+                  required
+                />
               </td>
               <td>
-                <input type="text" name="hire_date" required />
+                <input
+                  type="text"
+                  name="hire_date"
+                  onChange={(e) => this.handleHiredateChange(e)}
+                  required
+                />
               </td>
             </tr>
           </tbody>
@@ -303,6 +573,7 @@ export default class Form extends Component {
                       <input
                         type="text"
                         name="first_name"
+                        onChange={(e) => this.handleFirstNameChange(e)}
                         hidden={
                           this.state.editable === String(response.emp_no)
                             ? false
@@ -316,11 +587,9 @@ export default class Form extends Component {
                     {response.last_name}
                     <p>
                       <input
-                        ref={(inputDetails) => {
-                          this.inputDetails = inputDetails;
-                        }}
                         type="text"
                         name="last_name"
+                        onChange={(e) => this.handleLastNameChange(e)}
                         hidden={
                           this.state.editable === String(response.emp_no)
                             ? false
@@ -336,6 +605,7 @@ export default class Form extends Component {
                       <input
                         type="text"
                         name="gender"
+                        onChange={(e) => this.handleGenderChange(e)}
                         hidden={
                           this.state.editable === String(response.emp_no)
                             ? false
@@ -351,6 +621,7 @@ export default class Form extends Component {
                       <input
                         type="text"
                         name="birth_date"
+                        onChange={(e) => this.handleBirthdateChange(e)}
                         hidden={
                           this.state.editable === String(response.emp_no)
                             ? false
@@ -366,6 +637,7 @@ export default class Form extends Component {
                       <input
                         type="text"
                         name="hire_date"
+                        onChange={(e) => this.handleHiredateChange(e)}
                         hidden={
                           this.state.editable === String(response.emp_no)
                             ? false
