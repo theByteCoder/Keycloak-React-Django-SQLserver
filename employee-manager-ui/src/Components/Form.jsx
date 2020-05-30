@@ -36,8 +36,8 @@ export default class Form extends Component {
   Notify(message) {
     toast(message, {
       position: "top-right",
-      // autoClose: 5000,
-      autoClose: false,
+      autoClose: 2000,
+      // autoClose: false,
     });
   }
 
@@ -159,6 +159,11 @@ export default class Form extends Component {
       editable: this.state.selectedRadio,
       buttonEdit: false,
       buttonUpdate: true,
+      FIRST_NAME: "",
+      LAST_NAME: "",
+      GENDER: "",
+      BIRTH_DATE: "",
+      HIRE_DATE: "",
     });
     // this.Notify("Please update details for selected record");
 
@@ -197,6 +202,7 @@ export default class Form extends Component {
       );
       this.setState({
         toEdit: false,
+        buttonCreate: true,
       });
     } else {
       if (reqList.length > 1) {
@@ -332,24 +338,23 @@ export default class Form extends Component {
           if (response["response"] === "201 Created") {
             this.editTable.hidden = true;
             this.Notify(
-              `Record for Employee ${this.state.empnum} created successfully.`
+              `New record for Employee ID ${this.state.empnum} created successfully.`
             );
-            this.callApi_searchEmployee();
           } else if (response["response"] === "204 Deleted") {
             this.Notify(
-              `Record for Employee ${this.state.selectedRadio} deleted successfully.`
+              `Record for Employee ID ${this.state.selectedRadio} deleted successfully.`
             );
-            this.callApi_searchEmployee();
+            this.setState({ empnum: "*" });
           } else if (response["response"] === "404 Not Found") {
             this.Notify(
-              `Record for Employee ${this.state.selectedRadio} not found.`
+              `Record for Employee ID ${this.state.selectedRadio} not found.`
             );
-            this.callApi_searchEmployee();
+            this.setState({ empnum: "*" });
           } else if (response["response"] === "201 Updated") {
             this.Notify(
-              `Record for Employee ${this.state.selectedRadio} updated successfully.`
+              `Record for Employee ID ${this.state.selectedRadio} updated successfully.`
             );
-            this.callApi_searchEmployee();
+            this.setState({ empnum: this.state.selectedRadio });
           }
           this.setState({
             toEdit: false,
@@ -358,7 +363,11 @@ export default class Form extends Component {
             buttonUpdate: true,
             buttonEdit: true,
             buttonDelete: true,
+            // empnum: "*",
           });
+          this.callApi_searchEmployee();
+          this.searchTxtbx.value = "";
+          this.setState({ empnum: " " });
         }
         // }
       });

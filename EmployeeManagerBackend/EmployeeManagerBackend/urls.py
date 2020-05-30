@@ -13,7 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.conf.urls import url, include
+from django.contrib import admin
 from rest_framework import routers
 
 from Manager.views import *
@@ -22,11 +23,14 @@ router = routers.DefaultRouter()
 router.register('Employees', EmployeesViews)
 
 urlpatterns = [
-    path('api/searchEmployee/create/info=<str:info>/', create_record),
+    url('api/searchEmployee/create/info=<str:info>/', create_record),
     # path('api/employeesList/', get_record),
-    path('api/searchEmployee/', get_record_all),
-    path('api/searchEmployee/emp_no=<int:emp_no>/', get_record_single),
-    path('api/searchEmployee/update/info=<str:info>/', update_record),
-    path('api/searchEmployee/delete/emp_no=<int:emp_no>/', delete_record),
-    path('api/googleSearch/', google_search),
+    url('api/searchEmployee/', get_record_all),
+    url('api/searchEmployee/emp_no=<int:emp_no>/', get_record_single),
+    url('api/searchEmployee/update/info=<str:info>/', update_record),
+    url('api/searchEmployee/delete/emp_no=<int:emp_no>/', delete_record),
+    url('api/googleSearch/', google_search),
+    url(r'', include('Manager.urls')),
+    url(r'^admin/', admin.site.urls),
+    url(r'openid/', include('djangooidc.urls')),
 ]

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from bossoidc.settings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,7 +39,23 @@ INSTALLED_APPS = [
     'Manager',
     'rest_framework',
     'corsheaders',
+    'bossoidc',
+    'djangooidc',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'bossoidc.backend.OpenIdConnectBackend',
+)
+
+auth_uri = "http://localhost:8080/auth/realms/shared_users"
+client_id = "django-client"
+public_uri = "http://localhost:8000/"
+
+configure_oidc(auth_uri, client_id, public_uri)
+
+OIDC_OP_LOGOUT_ENDPOINT = "http:///auth/realms/my-realm/protocol/openid-connect/logout"
+# OIDC_OP_LOGOUT_URL_METHOD = "Manager.views.keycloak_logout"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
