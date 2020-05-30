@@ -54,8 +54,10 @@ public_uri = "http://localhost:8000/"
 
 configure_oidc(auth_uri, client_id, public_uri)
 
-OIDC_OP_LOGOUT_ENDPOINT = "http:///auth/realms/my-realm/protocol/openid-connect/logout"
+# OIDC_OP_LOGOUT_ENDPOINT = "http:///auth/realms/my-realm/protocol/openid-connect/logout"
+OIDC_OP_LOGOUT_ENDPOINT = "http://localhost:8080/auth/realms/shared_users/protocol/openid-connect/logout"
 # OIDC_OP_LOGOUT_URL_METHOD = "Manager.views.keycloak_logout"
+OIDC_OP_LOGOUT_URL_METHOD = 'Manager.keycloak_logout'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,7 +75,9 @@ ROOT_URLCONF = 'EmployeeManagerBackend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'EmployeesManagerBackend/Manager/static')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

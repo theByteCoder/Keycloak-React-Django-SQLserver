@@ -1,18 +1,12 @@
+from django.conf import settings
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from rest_framework import viewsets
 
 from .serializer import *
-
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
-
-from django.conf import settings
-from django.contrib import auth
-from django.http import request
-from django.http import HttpResponseRedirect
-
-from django.shortcuts import redirect
 
 
 def index(request):
@@ -20,16 +14,27 @@ def index(request):
     return response
 
 
-# def index(request):
-#     return HttpResponse('HTTP protocol is unauthorized. Try HTTPS <a href="/secure">Secure</a>')
-
-
 @login_required
 def secure(request):
     return HttpResponse('Secure page. <a href="/openid/logout">Logout</a>')
 
 
-# Create your views here.
+def get_logout_url(request):
+    keycloak_redirect_url = settings.OIDC_OP_LOGOUT_ENDPOINT or None
+    return keycloak_redirect_url + "?redirect_uri=" + request.build_absolute_uri("/")
+
+
+@login_required
+def keycloak_logout(request):
+    django_logout_url = settings.LOGOUT_REDIRECT_URL or '/'
+    if request.user.is_authenticated():
+        logout_url = get_logout_url(request)
+        # Log out the Django user if they were logged in.
+        auth.logout(request)
+    response = redirect(logout_url)
+    return response
+
+
 def create_record(request, **info):
     import json
     details = json.loads(info['info'])
@@ -54,30 +59,8 @@ def get_record(request):
     return JsonResponse(record, safe=False)
 
 
-def get_logout_url(request):
-    '''
-    Return the url of the logout for keycloak
-    '''
-    keycloak_redirect_url = settings.OIDC_OP_LOGOUT_ENDPOINT or None
-    return keycloak_redirect_url + "?redirect_uri=" + request.build_absolute_uri("/")
-
-
-def keycloak_logout(request):
-    '''
-    Perform the logout of the app and redirect to keycloak
-    '''
-    django_logout_url = settings.LOGOUT_REDIRECT_URL or '/'
-
-    if request.user.is_authenticated():
-        logout_url = get_logout_url(request)
-
-        # Log out the Django user if they were logged in.
-        auth.logout(request)
-
-        return HttpResponseRedirect(logout_url)
-
-
 # @staff_member_required
+@login_required
 def get_record_all(request):
     all_emp_list = {}
     if request.user.is_authenticated():
@@ -88,6 +71,7 @@ def get_record_all(request):
     return JsonResponse(all_emp_list, safe=False)
 
 
+@login_required
 def get_record_single(request, emp_no):
     all_emp = list(Employees.objects.all().values().filter(emp_no=emp_no))
     if not (len(all_emp) == 0):
@@ -96,6 +80,7 @@ def get_record_single(request, emp_no):
         return JsonResponse([], safe=False)
 
 
+@login_required
 def update_record(request, **info):
     import json
     details = json.loads(info['info'])
@@ -107,6 +92,7 @@ def update_record(request, **info):
     return JsonResponse({'response': '201 Updated'})
 
 
+@login_required
 def delete_record(request, emp_no):
     if emp_no != "" and type(emp_no) is not None:
         instance = Employees.objects.filter(emp_no=emp_no)
@@ -118,6 +104,7 @@ def delete_record(request, emp_no):
             return JsonResponse({'response': '404 Not Found'})
 
 
+@login_required
 def get_last_employee_number():
     all_emp = Employees.objects.all().values()
     all_emp_list = list(all_emp)
@@ -125,6 +112,7 @@ def get_last_employee_number():
     return last_emp_record["emp_no"]
 
 
+@login_required
 def google_search(request):
     return JsonResponse({'google': 'googlesearch.html'})
 
