@@ -1,0 +1,9 @@
+{
+  "realm": "shared_users",
+  "auth-server-url": "http://localhost:8080/auth",
+  "ssl-required": "external",
+  "resource": "shared-client",
+  "public-client": true,
+  "confidential-port": 0,
+  "enable-cors": true
+}

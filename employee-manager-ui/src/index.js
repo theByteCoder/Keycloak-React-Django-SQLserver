@@ -1,16 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-// import App from "./App";
+import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import NavBar from "./Components/NavBar";
 import Body from "./Components/Body";
 import Form from "./Components/Form";
+import Secured from "./Secured";
 
 ReactDOM.render(
   <React.StrictMode>
     <div className="container">
+      {/* <App /> */}
+      {/* <Secured /> */}
       <NavBar />
       <Body />
       <Form />

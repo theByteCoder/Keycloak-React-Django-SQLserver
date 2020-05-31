@@ -49,7 +49,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 auth_uri = "http://localhost:8080/auth/realms/shared_users"
-client_id = "django-client"
+# client_id = "django-client"
+client_id = "shared-client"
 public_uri = "http://localhost:8000/"
 
 configure_oidc(auth_uri, client_id, public_uri)

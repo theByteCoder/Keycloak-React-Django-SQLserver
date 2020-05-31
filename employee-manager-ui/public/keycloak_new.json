@@ -1,0 +1,17 @@
+{
+  "realm": "shared_users",
+  "resource": "shared-client",
+  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqU9Ih9+YG2FefzMKfO6dYXPyd4Jj1//fyHyGrf92MsTKAcZUcwZUuPavQ5QY6GXn+5AqBh6s+P5rJbbK9m8CMfIQEz7EKDvPgwCYfv4shD96g3K2TJP1A8OjIYWJ1NJ5V9rLt3YsfuI//xQ0dkAi6B49GOpLcrN5Bv4F1dXI8U4Kc1HJd9axy0uC8v9WY1jIw5hcWnhAw5IUP3hXM0/NUJMFqLzL6n4EG+A1oVm5Pf4suqnHSmXwPyqMNnpwKM85ZTi22kAHEAP1vw76kd3lHJ3dS1NlcaujmUKmRJrzMzaDhdJZzyBs+TQTIuOqmeoRnwoUSdBVsyze90MibJ7wqQIDAQAB",
+  "auth-server-url": "http://localhost:8080/auth",
+  "bearer-only": true,
+  "ssl-required": "external",
+  "disable-trust-manager": "true",
+  "enable-cors": true,
+  "cors-exposed-headers": "X-Custom1",
+  "credentials": {
+    "secret": "secret"
+  },
+  "policy-enforcer": {
+    "enforcement-mode": "DISABLED"
+  }
+}

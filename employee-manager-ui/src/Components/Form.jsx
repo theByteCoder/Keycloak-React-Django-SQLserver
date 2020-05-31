@@ -3,6 +3,9 @@ import React, { Component } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Keycloak from "keycloak-js";
+import { KeycloakProvider } from "@react-keycloak/web";
+
 export default class Form extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +33,8 @@ export default class Form extends Component {
       buttonEdit: true,
       buttonUpdate: true,
       buttonDelete: true,
+      keycloak: null,
+      authenticated: false,
     };
   }
 
@@ -241,7 +246,6 @@ export default class Form extends Component {
       }
       if (reqList.length === 0) {
         let info = this.allEditFieldsFilled();
-        console.log(typeof info);
         this.callApi_updateCreateDeleteRecord(
           `${this.state.BASE_URI}/update/info=${info}/`
         );
@@ -278,7 +282,12 @@ export default class Form extends Component {
     return true;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    const keycloak = Keycloak("/keycloak.json");
+    keycloak.init({ onLoad: "login-required" }).then((authenticated) => {
+      this.setState({ keycloak: keycloak, authenticated: authenticated });
+    });
+  }
 
   callApi_searchEmployee() {
     let url = "";

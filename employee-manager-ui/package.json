@@ -11,9 +11,11 @@
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
     "react-notifications": "^1.6.0",
-    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-toastify": "^6.0.5"
+    "react-toastify": "^6.0.5",
+    "react-router-dom": "^5.2.0",
+    "keycloak-js": "^10.0.1",
+    "@react-keycloak/web": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
